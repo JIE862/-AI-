@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的网页 - face-api.js版本</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P:wght@400&display=swap" rel="stylesheet">
+    <script defer src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+    <script>
+        if (!localStorage.getItem('userData')) {
+            window.location.href = 'login.html';
+        }
+    </script>
+</head>
+<body>
+    <div class="main-wrapper">
+        <div class="image-section">
+            <div class="grid-overlay"></div>
+            <div class="column-labels"></div>
+            <div class="row-labels"></div>
+            <div class="column-labels-bottom"></div>
+            <video class="positioned-video" autoplay loop muted>
+                <source src="assets/video/4月8日1.mp4" type="video/mp4">
+                你的浏览器不支持视频播放
+            </video>
+            <img src="assets/A/1774248255989.gif" alt="触发GIF" class="triggered-gif" id="triggeredGif">
+            <img src="assets/A/1774248255989.gif" alt="AI1触发GIF" class="ai1-triggered-gif" id="ai1TriggeredGif">
+            <img src="assets/A/1774248255989.gif" alt="AI2触发GIF" class="ai2-triggered-gif" id="ai2TriggeredGif">
+            <img src="assets/A/1774248255989.gif" alt="AI3触发GIF" class="ai3-triggered-gif" id="ai3TriggeredGif">
+            <img src="assets/A/d4adc326c9ac88442c54c7efce134b47.jpg" alt="网页图片" class="side-image">
+            <div class="pixel-lamp red" id="pixelLamp"></div>
+            <div class="camera-preview" id="cameraPreview">
+                <div class="camera-preview-title">
+                    摄像头预览
+                    <button class="camera-close-btn" id="cameraCloseBtn" title="关闭预览">✕</button>
+                </div>
+                <video id="previewVideo" autoplay muted playsinline></video>
+                <div class="camera-status" id="cameraStatus">正在加载模型...</div>
+            </div>
+        </div>
+        <div class="content-section">
+            <div class="container">
+                <img src="assets/B/微信图片_20260320162239_682_187.jpg" alt="轨迹素材" class="right-image">
+                <div class="grid-overlay"></div>
+                <div class="column-labels"></div>
+                <div class="row-labels"></div>
+                <div class="column-labels-bottom"></div>
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <span class="chat-title">AI助手群聊</span>
+                        <button class="logout-button" id="logoutButton">退出登录</button>
+                    </div>
+                    <div class="chat-messages" id="chatMessages">
+                    </div>
+                </div>
+                <button class="invisible-button" id="showMembersButton"></button>
+                <div class="c-interface" id="cInterface">
+                    <div class="c-interface-content">
+                        <h3>群成员</h3>
+                        <div class="members-grid">
+                            <div class="member-card">
+                                <div class="member-avatar">我</div>
+                                <div class="member-info">
+                                    <div class="member-name">群主</div>
+                                    <div class="member-role">群主</div>
+                                </div>
+                            </div>
+                            <div class="member-card">
+                                <div class="member-avatar ai-avatar-1">小数</div>
+                                <div class="member-info">
+                                    <div class="member-name">小数</div>
+                                    <div class="member-role">数据分析师</div>
+                                </div>
+                            </div>
+                            <div class="member-card">
+                                <div class="member-avatar ai-avatar-2">小文</div>
+                                <div class="member-info">
+                                    <div class="member-name">小文</div>
+                                    <div class="member-role">创意文案专员</div>
+                                </div>
+                            </div>
+                            <div class="member-card">
+                                <div class="member-avatar ai-avatar-3">小程</div>
+                                <div class="member-info">
+                                    <div class="member-name">小程</div>
+                                    <div class="member-role">效率执行助理</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <input type="text" class="chat-input-b1" id="chatInputB1" placeholder="输入消息...">
+            </div>
+        </div>
+    </div>
+    <script src="script-faceapi.js"></script>
+</body>
+</html>

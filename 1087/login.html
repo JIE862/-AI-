@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录 - AI交互系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'MS Sans Serif', 'Segoe UI', Arial, sans-serif;
+            background-image: url('微信图片_20260408232534_34_26.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        .info-panel {
+            position: absolute;
+            top: 870px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 450px;
+            height: 80px;
+            background: #c0c0c0;
+            border: 2px solid #000;
+            border-right-color: #808080;
+            border-bottom-color: #808080;
+            box-shadow: 2px 2px 0 #000;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            z-index: 100;
+        }
+
+        .info-panel .time-display {
+            font-size: 32px;
+            font-weight: bold;
+            color: #000080;
+            text-align: center;
+            margin-bottom: 5px;
+            text-shadow: 1px 1px 0 #fff;
+            font-family: 'Courier New', monospace;
+        }
+
+        .info-panel .secondary-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: #000;
+        }
+
+        .info-panel .date-info {
+            text-align: left;
+        }
+
+        .info-panel .weather-info {
+            text-align: right;
+        }
+
+        .info-panel .info-label {
+            color: #808080;
+            font-size: 10px;
+        }
+
+        .info-panel .info-value {
+            color: #000080;
+            font-weight: bold;
+        }
+
+        .login-container {
+            background: #c0c0c0;
+            border: 2px solid #000;
+            border-right-color: #808080;
+            border-bottom-color: #808080;
+            box-shadow: 2px 2px 0 #000;
+            padding: 20px;
+            width: 100%;
+            max-width: 450px;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .selected-avatar-display {
+            text-align: center;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .selected-avatar-display.show {
+            display: block;
+        }
+
+        .selected-avatar-image {
+            width: 130px;
+            height: 130px;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            border: 3px solid #000080;
+            border-radius: 0;
+            margin: 0 auto;
+            box-shadow: 2px 2px 0 #000;
+        }
+
+        .login-title {
+            text-align: center;
+            color: #000080;
+            margin-bottom: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            text-shadow: 1px 1px 0 #fff;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            display: block;
+            color: #000;
+            font-size: 12px;
+            margin-bottom: 5px;
+            font-weight: normal;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 8px 10px;
+            border: 2px solid #808080;
+            border-right-color: #fff;
+            border-bottom-color: #fff;
+            border-radius: 0;
+            font-size: 12px;
+            transition: none;
+            outline: none;
+            background: #fff;
+            font-family: 'MS Sans Serif', 'Segoe UI', Arial, sans-serif;
+        }
+
+        .form-input:focus {
+            border-color: #000080;
+            border-right-color: #fff;
+            border-bottom-color: #fff;
+        }
+
+        .form-input::placeholder {
+            color: #808080;
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 10px;
+            background: #c0c0c0;
+            color: #000;
+            border: 2px solid #fff;
+            border-right-color: #808080;
+            border-bottom-color: #808080;
+            border-radius: 0;
+            font-size: 12px;
+            font-weight: normal;
+            cursor: pointer;
+            transition: none;
+            margin-top: 10px;
+            font-family: 'MS Sans Serif', 'Segoe UI', Arial, sans-serif;
+            box-shadow: 2px 2px 0 #000;
+        }
+
+        .login-button:hover {
+            background: #d0d0d0;
+        }
+
+        .login-button:active {
+            border: 2px solid #808080;
+            border-right-color: #fff;
+            border-bottom-color: #fff;
+            box-shadow: 1px 1px 0 #000;
+        }
+
+        .login-button:disabled {
+            background: #c0c0c0;
+            color: #808080;
+            cursor: not-allowed;
+        }
+
+        .error-message {
+            color: #800000;
+            font-size: 11px;
+            margin-top: 10px;
+            text-align: center;
+            display: none;
+            background: #ffffe0;
+            border: 1px solid #000;
+            padding: 5px;
+        }
+
+        .error-message.show {
+            display: block;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .avatar-selection {
+            background: #c0c0c0;
+            border: 2px solid #000;
+            border-right-color: #808080;
+            border-bottom-color: #808080;
+            box-shadow: 2px 2px 0 #000;
+            padding: 20px;
+            width: 100%;
+            max-width: 450px;
+            margin-top: 20px;
+            text-align: center;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .avatar-label {
+            color: #000080;
+            font-size: 14px;
+            margin-bottom: 15px;
+            display: block;
+            font-weight: bold;
+            text-shadow: 1px 1px 0 #fff;
+        }
+
+        .avatar-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            justify-items: center;
+        }
+
+        .avatar-option {
+            width: 80px;
+            height: 80px;
+            cursor: pointer;
+            border: 2px solid #808080;
+            border-right-color: #fff;
+            border-bottom-color: #fff;
+            transition: none;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+            border-radius: 0;
+            box-shadow: 2px 2px 0 #000;
+        }
+
+        .avatar-option:hover {
+            border-color: #000080;
+            border-right-color: #fff;
+            border-bottom-color: #fff;
+        }
+
+        .avatar-option.selected {
+            border-color: #000080;
+            border-right-color: #fff;
+            border-bottom-color: #fff;
+            background-color: #e0e0e0;
+        }
+
+        .avatar-option.selected::after {
+            content: '✓';
+            position: absolute;
+            bottom: -5px;
+            right: -5px;
+            background: #000080;
+            color: #fff;
+            width: 20px;
+            height: 20px;
+            border-radius: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            border: 1px solid #fff;
+            border-right-color: #808080;
+            border-bottom-color: #808080;
+        }
+
+        .avatar-1 {
+            background-image: url('head/微信图片_20260329173510_1_26.jpg');
+        }
+
+        .avatar-2 {
+            background-image: url('head/微信图片_20260329173511_2_26.jpg');
+        }
+
+        .avatar-3 {
+            background-image: url('head/微信图片_20260329173512_3_26.jpg');
+        }
+
+        .avatar-4 {
+            background-image: url('head/微信图片_20260329173526_4_26.jpg');
+        }
+    </style>
+</head>
+<body>
+    <div class="info-panel">
+        <div class="time-display" id="timeDisplay">00:00:00</div>
+        <div class="secondary-info">
+            <div class="date-info">
+                <div class="info-label">日期</div>
+                <div class="info-value" id="dateDisplay">2024-01-01</div>
+            </div>
+            <div class="weather-info">
+                <div class="info-label">北京天气</div>
+                <div class="info-value" id="weatherDisplay">加载中...</div>
+            </div>
+        </div>
+    </div>
+    <div class="login-container">
+        <div class="selected-avatar-display" id="selectedAvatarDisplay">
+            <div class="selected-avatar-image" id="selectedAvatarImage"></div>
+        </div>
+        
+        <h1 class="login-title">欢迎登录</h1>
+        
+        <div class="form-group">
+            <label class="form-label" for="username">用户名</label>
+            <input type="text" id="username" class="form-input" placeholder="请输入用户名">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="password">密码</label>
+            <input type="password" id="password" class="form-input" placeholder="请输入密码">
+        </div>
+
+        <button class="login-button" id="loginButton">登录</button>
+        <div class="error-message" id="errorMessage">请选择头像并输入用户名和密码</div>
+    </div>
+
+    <div class="avatar-selection">
+        <span class="avatar-label">选择您的头像</span>
+        <div class="avatar-grid">
+            <div class="avatar-option avatar-1" data-avatar="1"></div>
+            <div class="avatar-option avatar-2" data-avatar="2"></div>
+            <div class="avatar-option avatar-3" data-avatar="3"></div>
+            <div class="avatar-option avatar-4" data-avatar="4"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const avatarOptions = document.querySelectorAll('.avatar-option');
+            const loginButton = document.getElementById('loginButton');
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+            const errorMessage = document.getElementById('errorMessage');
+            const selectedAvatarDisplay = document.getElementById('selectedAvatarDisplay');
+            const selectedAvatarImage = document.getElementById('selectedAvatarImage');
+            const timeDisplay = document.getElementById('timeDisplay');
+            const dateDisplay = document.getElementById('dateDisplay');
+            const weatherDisplay = document.getElementById('weatherDisplay');
+            
+            let selectedAvatar = null;
+
+            function updateTime() {
+                const now = new Date();
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const seconds = String(now.getSeconds()).padStart(2, '0');
+                timeDisplay.textContent = `${hours}:${minutes}:${seconds}`;
+            }
+
+            function updateDate() {
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const day = String(now.getDate()).padStart(2, '0');
+                const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
+                const weekday = weekdays[now.getDay()];
+                dateDisplay.textContent = `${year}-${month}-${day} 星期${weekday}`;
+            }
+
+            async function updateWeather() {
+                try {
+                    const response = await fetch('https://api.open-meteo.com/v1/forecast?latitude=39.9042&longitude=116.4074&current_weather=true');
+                    const data = await response.json();
+                    const temperature = Math.round(data.current_weather.temperature);
+                    weatherDisplay.textContent = `${temperature}°C`;
+                } catch (error) {
+                    console.error('获取天气失败:', error);
+                    weatherDisplay.textContent = '天气数据不可用';
+                }
+            }
+
+            updateTime();
+            updateDate();
+            updateWeather();
+
+            setInterval(updateTime, 1000);
+            setInterval(updateDate, 60000);
+            setInterval(updateWeather, 300000);
+
+        avatarOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                avatarOptions.forEach(opt => opt.classList.remove('selected'));
+                this.classList.add('selected');
+                selectedAvatar = this.dataset.avatar;
+                
+                const avatarImages = [
+                    'head/微信图片_20260329173510_1_26.jpg',
+                    'head/微信图片_20260329173511_2_26.jpg',
+                    'head/微信图片_20260329173512_3_26.jpg',
+                    'head/微信图片_20260329173526_4_26.jpg'
+                ];
+                
+                selectedAvatarImage.style.backgroundImage = `url('${avatarImages[selectedAvatar - 1]}')`;
+                selectedAvatarDisplay.classList.add('show');
+                
+                hideError();
+            });
+        });
+
+        loginButton.addEventListener('click', handleLogin);
+
+        function handleLogin() {
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value.trim();
+
+            if (!selectedAvatar) {
+                showError('请选择头像');
+                return;
+            }
+
+            if (!username) {
+                showError('请输入用户名');
+                return;
+            }
+
+            if (!password) {
+                showError('请输入密码');
+                return;
+            }
+
+            const avatarImages = [
+                '微信图片_20260329173510_1_26.jpg',
+                '微信图片_20260329173511_2_26.jpg',
+                '微信图片_20260329173512_3_26.jpg',
+                '微信图片_20260329173526_4_26.jpg'
+            ];
+
+            const userData = {
+                username: username,
+                avatar: avatarImages[selectedAvatar - 1],
+                isLoggedIn: true
+            };
+
+            localStorage.setItem('userData', JSON.stringify(userData));
+            
+            window.location.href = 'index.html';
+        }
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.classList.add('show');
+            setTimeout(() => {
+                errorMessage.classList.remove('show');
+            }, 3000);
+        }
+
+        function hideError() {
+            errorMessage.classList.remove('show');
+        }
+
+        usernameInput.addEventListener('input', hideError);
+        passwordInput.addEventListener('input', hideError);
+        });
+    </script>
+</body>
+</html>
